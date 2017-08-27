@@ -1,3 +1,8 @@
 #welcome{
 	font-style:italic;
 }
+
+#d3-content svg{
+	display: block;
+	margin: 0 auto;
+}
