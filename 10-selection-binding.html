@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The D3 Visualization Learning</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <script src="d3-js/d3.min.js"></script>
+  <script>
+  	d3.csv("data/cities.csv",function(data){
+  		d3.select('body').selectAll("div.cities").data(data).enter().append("div").attr("class","cities").html(function(d,i){return d.label;});
+  	});
+  </script>
+</body>
+</html>

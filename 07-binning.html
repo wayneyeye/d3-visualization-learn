@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The D3 Visualization Learning</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <script src="d3-js/d3.min.js"></script>
+  <script>
+  	var sampleArray=[423,124,66,424,58,10,900,44,1];
+  	var qScale=d3.scaleQuantile().domain(sampleArray).range([0,1,2]);
+  	console.log(qScale(200));
+  	var sampleArray=[423,124,66,424,58,10,900,44,1];
+  	var qScale=d3.scaleQuantile().domain(sampleArray).range(['small','medium','big']);
+  	console.log(qScale(2000));
+  </script>>
+</body>
+</html>

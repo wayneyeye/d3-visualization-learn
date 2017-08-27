@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The D3 Visualization Learning</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <script src="d3-js/d3.min.js"></script>
+  <script>
+  	d3.json("data/tweets.json",function(data){
+  		var tweetData=data.tweets;//tweetData is a json list
+  		var nestedTweets=d3.nest().key(function(el){
+  			return el.user //group by user
+  		}).entries(tweetData);
+  		console.log(nestedTweets);
+  	});
+  </script>
+  d3.nest method group the dataset into a hierarchical structure
+</body>
+</html>
