@@ -1,0 +1,14 @@
+#!/home/yewenhe0904/anaconda3/bin/python3
+import json,sys,os
+filelist=os.listdir()
+html_list=[]
+for f in filelist:
+    fname_splitted=f.split(".")
+    if len(fname_splitted)>1:
+        if fname_splitted[-1]=='html':
+            if fname_splitted[0]!='index': #exclude the main index page
+                html_list.append({'url':f,'name':fname_splitted[0]})
+html_list=sorted(html_list,key=lambda x: int(x['name'].split("-")[0]),reverse=False)
+print("Number of html pages loaded: %s" %len(html_list))
+with open('main.json', 'w') as out:
+    text=json.dump(html_list,out)
