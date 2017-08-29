@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The D3 Visualization Learning</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <script src="d3-js/d3.min.js"></script>
+  <svg style="width:500px;height:500px;"></svg>
+  <script>d3.select("body").append("a").attr("href","index.html").html("Back to Home Page")</script>
+  <script>
+  	  d3.json("data/tweets.json", data => dataViz(data.tweets)); //important to use .tweets but not data only!!!
+      // => lambda in javascript!
+      function dataViz(incomingData) {
+        incomingData.forEach(d => {
+          d.impact = d.favorites.length + d.retweets.length; //calculate the impact
+          d.tweetTime = new Date(d.timestamp); //store the tweetTime
+        });
+        
+        var maxImpact = d3.max(incomingData, d => d.impact);
+        //use .extent to get the right domain range
+        var startEnd = d3.extent(incomingData, d => d.tweetTime);
+        var timeRamp = d3.scaleTime().domain(startEnd).range([20,480]);
+        var yScale = d3.scaleLinear().domain([0,maxImpact]).range([0,460]);
+        var radiusScale = d3.scaleLinear()
+          .domain([0,maxImpact]).range([1,20]);
+        //way to define the color encoding!!!
+        var colorScale = d3.scaleLinear()
+          .domain([0,maxImpact]).range(["white","#75739F"]);
+
+        d3.select("svg")
+          .selectAll("circle")
+          .data(incomingData)
+          .enter()
+          .append("circle")
+            .attr("r", d => radiusScale(d.impact))
+            .attr("cx", d => timeRamp(d.tweetTime))
+            .attr("cy", d => 480 - yScale(d.impact))//draw from the bottom
+            .style("fill", d => colorScale(d.impact))
+            .style("stroke", "black")
+            .style("stroke-width", "1px");
+      }
+  </script>
+</body>
+</html>
