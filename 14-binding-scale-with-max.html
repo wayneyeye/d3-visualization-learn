@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The D3 Visualization Learning</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <svg></svg>
+  <script src="d3-js/d3.min.js"></script>
+  <script>d3.select("body").append("a").attr("href","index.html").html("Back to Home Page")</script>
+  <script>
+  	// define a scale here
+    var yScale=d3.scaleLinear().domain([0,300,1500]).range([0,50,100]).clamp(true);
+  	d3.select("svg").attr("height",500).selectAll("rect")
+  	.data([150,500,220,80,3000,1000])
+  	.enter()
+  	.append("rect")
+  	.attr("width",10)
+  	.attr("height",function(d){return yScale(d);})
+  	.style("fill","blue")
+  	.style("stroke","red")
+  	.style("stroke-width","1px")
+  	.style("opacity",0.25)
+  	.attr("x",function(d,i){return i*10;})
+  	.attr("y",function(d,i){return 500-yScale(d);})
+  	;
+    console.log(yScale(100),yScale(1000),yScale(2000));
+  </script>
+</body>
+</html>
