@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The D3 Visualization Learning</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <script src="d3-js/d3.min.js"></script>
+  <svg></svg>	
+  <script>
+  	d3.select("svg").selectAll("rect")
+  	.data([15,50,22,8,100,10])
+  	.enter()
+  	.append("rect")
+  	.attr("width",10)
+  	.attr("height",function(d){return d;})
+  	.style("fill","blue")
+  	.style("stroke","red")
+  	.style("stroke-width","1px")
+  	.style("opacity",0.25)
+  	.attr("x",function(d,i){return i*10;})
+  	.attr("y",function(d,i){return 100-d;})
+  	;
+  </script>
+</body>
+</html>
