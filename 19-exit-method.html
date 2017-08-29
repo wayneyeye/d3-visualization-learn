@@ -41,6 +41,11 @@
             .style("stroke-width", "1px");
         tweetG.append("text")
           .text(d => `${d.user}-${d.tweetTime.getHours()}`);
+
+        d3.selectAll('g').data([1,2,3,4]).exit().remove();
+        d3.selectAll('g').select('text').text(d=>d);
+        d3.selectAll('text').each(d=>console.log(d));//   returns new data     
+        d3.selectAll('circle').each(d=>console.log(d));//  returns old data
       }
   </script>
 </body>
