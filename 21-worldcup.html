@@ -1,0 +1,101 @@
+	<!doctype html>
+	<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>The D3 Visualization Learning</title>
+		<link rel="stylesheet" href="css/styles.css">
+		<script src="d3-js/d3.min.js"></script>
+		<script src="d3-js/colorbrewer.js"></script>
+		<style>
+			text {
+				font-size: 10px;
+				text-anchor: middle;
+				fill: #4f442b;
+			}
+			g > text.active {
+				font-size: 30px;
+			}
+			circle {
+				fill: #75739F;
+				stroke: black;
+				stroke-width: 1px;
+			}
+			circle.active {
+				fill: #FE9922;
+			}
+			circle.inactive {
+				fill: #C4B9AC;
+			}
+		</style>
+	</head>
+	<body onload="createSoccerViz()">
+		<div id='viz'>
+			<svg style="width:500px;height:500px;"></svg>
+		</div>
+		<div id="controls"></div>
+		<script>d3.select("body").append("a").attr("href","index.html").html("Back to Home Page")</script>
+		<script>
+			function createSoccerViz(){
+				d3.csv("data/worldcup.csv",function(data){
+					overallTeamViz(data);
+				})
+			}
+			function overallTeamViz(incomingData) {
+				d3.select("svg")
+				.append("g")
+				.attr("id", "teamsG")
+				.attr("transform", "translate(50,300)") //use the translate function to place items
+				.selectAll("g")
+				.data(incomingData)
+				.enter()
+				.append("g")
+				.attr("class", "overallG")
+				.attr("transform", (d, i) =>`translate(${(i * 50)}, 0)`);
+
+				var teamG = d3.selectAll("g.overallG");
+				teamG
+				.append("circle")
+				.attr("r", 0)
+				.transition()
+				.delay((d,i) => i * 100)
+				.duration(500)
+				.attr("r", 40)
+				.transition()
+				.duration(500)
+				.attr("r", 20);
+
+				teamG
+				.append("text")
+				.style("text-anchor", "middle")
+				.attr("y", 30)
+				.text(d => d.team);
+				
+				var dataKeys=d3.keys(incomingData[0]).filter(el=>el!="team" && el!="region");
+				
+				function buttonClick(datapoint){
+					// console.log(datapoint);
+					var maxValue=d3.max(incomingData,d=>parseFloat(d[datapoint]));
+					var radiusScale=d3.scaleLinear().domain([0,maxValue]).range([2,20]);
+					d3.selectAll("g.overallG").select("circle").attr("r",d=>radiusScale(d[datapoint]));
+				}
+				d3.select("#controls").selectAll("button.teams")// the controls buttons are bind to datakeys
+				.data(dataKeys).enter().append("button").on("click",buttonClick).html(d=>d);
+				//highlight teams from the same region
+				teamG.on("mouseover",highlightRegion);
+				function highlightRegion(d){
+					d3.selectAll("g.overallG").select("circle").transition().duration(300).style("fill",p=>p.region==d.region?"red":"gray");
+				}
+				//resumes the grey when mouse moves out the circles
+				teamG.on("mouseout",greyRegion);
+				function greyRegion(){
+					d3.selectAll("g.overallG").select("circle").transition().duration(1000).style("fill","gray");
+				}
+
+
+				// d3.select("circle").each((d,i)=>{console.log(d);console.log(i);console.log(this);});
+				console.log(d3.select("circle").node());
+			}
+
+		</script>
+	</body>
+	</html>
