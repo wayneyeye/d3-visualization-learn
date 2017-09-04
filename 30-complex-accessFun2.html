@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>The D3 Visualization Learning</title>
+	<link rel="stylesheet" href="css/styles.css">
+	<script src="d3-js/d3.min.js"></script>
+	<script src="d3-js/colorbrewer.js"></script>
+</head>
+<body>
+	<div id='viz'>
+		<svg style="width:500px;height:500px;"></svg>
+	</div>
+	<script>d3.select("body").append("a").attr("href","index.html").html("Back to Home Page")</script>
+	<script>
+		d3.csv("data/movies.csv", complexGraph);
+		function complexGraph(data)
+		{
+			//draw axis
+			var xScale = d3.scaleLinear().domain([ 1, 10 ]).range([ 20, 470 ]);
+			var yScale = d3.scaleLinear().domain([ 0, 100 ]).range([ 480, 20 ]);
+			var xAxis = d3.axisBottom()
+			.scale(xScale)
+			.tickSize(480)
+			.tickValues([1,2,3,4,5,6,7,8,9,10]);
+			d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
+
+			var yAxis = d3.axisRight()
+			.scale(yScale)
+			.ticks(10)
+			.tickSize(480);
+			d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
+			//color Ramp
+			var colorRamp=d3.scaleQuantize().domain([0,5]).range(colorbrewer.Paired[10])
+			var i=0;
+			for (x in data[0]) { // 
+				// console.log(x);
+				
+				if (x != "day") {
+					// console.log(i);
+					var movieArea = d3.area()
+					.x(function(d) {
+						return xScale(d.day);
+					})
+					.y0(function(d) {
+						return yScale(simpleStacking(d,x));
+					})
+					.y1(function(d){
+						return yScale(simpleStacking(d,x)-d[x]);
+					})
+					.curve(d3.curveBasis);
+					d3.select("svg")
+					.append("path")
+					.style("id", x + "Area")
+					.attr("d", movieArea(data))
+					.attr("fill", colorRamp(i))
+					.attr("stroke", "black")
+					.attr("stroke-width", 1)
+					.style("opacity", .5);
+
+					i=i+1;
+				};
+			};
+
+			function simpleStacking( incomingData, incomingAttribute) { // this is basically to sum the values up
+				var newHeight = 0;
+				for (x in incomingData) {
+					if (x != "day") {
+						newHeight += parseInt(incomingData[x]);
+						if (x == incomingAttribute) {
+							break;
+						}
+					}
+				}
+				return newHeight;
+			};
+		}
+	</script>
+</body>
+</html>

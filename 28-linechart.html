@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>The D3 Visualization Learning</title>
+	<link rel="stylesheet" href="css/styles.css">
+	<script src="d3-js/d3.min.js"></script>
+</head>
+<body>
+	<div id='viz'>
+		<svg style="width:500px;height:500px;"></svg>
+	</div>
+	<script>d3.select("body").append("a").attr("href","index.html").html("Back to Home Page")</script>
+	<script>
+		d3.csv("data/tweetdata.csv", lineChart);
+		function lineChart(data) {
+			xScale = d3.scaleLinear().domain([1,10.5]).range([20,480]);
+			yScale = d3.scaleLinear().domain([0,35]).range([480,20]);
+			//x axis
+			xAxis = d3.axisBottom()
+			.scale(xScale)
+			.tickSize(480)
+			.tickValues([1,2,3,4,5,6,7,8,9,10]);
+
+			d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
+
+			//y axis
+			yAxis = d3.axisRight()
+			.scale(yScale)
+			.ticks(10)
+			.tickSize(480);
+
+
+			d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
+			//data binding -- circle
+			d3.select("svg").selectAll("circle.tweets")
+			.data(data)
+			.enter()
+			.append("circle")
+			.attr("class", "tweets")
+			.attr("r", 5)
+			.attr("cx", function(d) {return xScale(d.day)})
+			.attr("cy", function(d) {return yScale(d.tweets)})
+			.style("fill", "black");
+
+			d3.select("svg").selectAll("circle.retweets")
+			.data(data)
+			.enter()
+			.append("circle")
+			.attr("class", "retweets")
+			.attr("r", 5)
+			.attr("cx", function(d) {return xScale(d.day)})
+			.attr("cy", function(d) {return yScale(d.retweets)})
+			.style("fill", "lightgray");
+
+			d3.select("svg").selectAll("circle.favorites")
+			.data(data)
+			.enter()
+			.append("circle")
+			.attr("class", "favorites")
+			.attr("r", 5)
+			.attr("cx", function(d) {return xScale(d.day)})
+			.attr("cy", function(d) {return yScale(d.favorites)})
+			.style("fill", "gray");
+
+			// line function feeds back the x,y coords of the datapoints
+			var tweetLine = d3.line(yName="retweets").curve(d3.curveMonotoneX) //change the curve basis when defining the call back
+			.x(function(d) {
+				return xScale(d.day);
+			})
+			.y(function(d) {
+				return yScale(d[yName]);
+			});
+
+			d3.select("svg")
+			.append("path")
+			.attr("d", tweetLine(data,yName="retweets")) //d attr in path for line path points
+			.attr("fill", "none")
+			.attr("stroke", "darkred")
+			.attr("stroke-width", 2);
+
+			d3.select("svg")
+			.append("path")
+			.attr("d", tweetLine(data,yName="tweets")) //d attr in path for line path points
+			.attr("fill", "none")
+			.attr("stroke", "darkgreen")
+			.attr("stroke-width", 2);
+
+			d3.select("svg")
+			.append("path")
+			.attr("d", tweetLine(data,yName="favorites")) //d attr in path for line path points
+			.attr("fill", "none")
+			.attr("stroke", "darkorange")
+			.attr("stroke-width", 2);
+
+
+		};
+	</script>
+</body>
+</html>
